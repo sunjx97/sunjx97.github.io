@@ -6,7 +6,7 @@
   <link href="https://sunjx97.github.io/atom.xml" rel="self"/>
   
   <link href="https://sunjx97.github.io/"/>
-  <updated>2022-01-04T05:44:49.437Z</updated>
+  <updated>2022-01-04T05:57:10.976Z</updated>
   <id>https://sunjx97.github.io/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://sunjx97.github.io/2022/01/04/%E8%A7%A3%E5%86%B3%E9%80%9A%E8%BF%87fstab%E5%BC%80%E6%9C%BA%E6%8C%82%E8%BD%BDsamba%E6%96%87%E4%BB%B6%E5%A4%B9%E5%AF%BC%E8%87%B4%E7%9A%84Database-is-locked%E9%97%AE%E9%A2%98/"/>
     <id>https://sunjx97.github.io/2022/01/04/%E8%A7%A3%E5%86%B3%E9%80%9A%E8%BF%87fstab%E5%BC%80%E6%9C%BA%E6%8C%82%E8%BD%BDsamba%E6%96%87%E4%BB%B6%E5%A4%B9%E5%AF%BC%E8%87%B4%E7%9A%84Database-is-locked%E9%97%AE%E9%A2%98/</id>
     <published>2022-01-04T05:38:54.000Z</published>
-    <updated>2022-01-04T05:44:49.437Z</updated>
+    <updated>2022-01-04T05:57:10.976Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>发现在使用fstab开机挂载的samba文件夹会有Database is locked的问题，如通过docker安装的nginx-proxy-manager和qiandao，因为默认使用了sqlite的数据库，会导致Database is locked问题，如下图：</p><img src="/images/解决通过fstab开机挂载samba文件夹导致的Database-is-locked问题/sqlite报错 01.png" width="70%" /><img src="/images/解决通过fstab开机挂载samba文件夹导致的Database-is-locked问题/sqlite报错 02.png" width="70%" />]]></content>
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>发现在使用fstab开机挂载的samba文件夹会有Database is locked的问题，如通过docker安装的nginx-proxy-manager和qiandao，映射的文件夹是samba（cifs）共享挂载的，因为默认使用了sqlite的数据库，会导致Database is locked问题，如下图：</p><img src="/images/解决通过fstab开机挂载samba文件夹导致的Database-is-locked问题/sqlite报错 01.png" width="70%" /><img src="/images/解决通过fstab开机挂载samba文件夹导致的Database-is-locked问题/sqlite报错 02.png" /><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>在挂载时加入<b>nolock</b>参数即可。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//myserver /mymount cifs username=**,password=**,nolock,uid=1000,gid=1000</span><br></pre></td></tr></table></figure><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.archiware.com/blog/pure_forum/pure-question-answers/database-is-locked/">Database is locked</a></p>]]></content>
     
     
       
@@ -33,14 +33,14 @@
     
     
     
-    <category term="ups" scheme="https://sunjx97.github.io/categories/ups/"/>
+    <category term="selfhosted" scheme="https://sunjx97.github.io/categories/selfhosted/"/>
     
     
-    <category term="network ups tools" scheme="https://sunjx97.github.io/tags/network-ups-tools/"/>
+    <category term="samba" scheme="https://sunjx97.github.io/tags/samba/"/>
     
-    <category term="nut" scheme="https://sunjx97.github.io/tags/nut/"/>
+    <category term="sqlite" scheme="https://sunjx97.github.io/tags/sqlite/"/>
     
-    <category term="ups" scheme="https://sunjx97.github.io/tags/ups/"/>
+    <category term="docker" scheme="https://sunjx97.github.io/tags/docker/"/>
     
   </entry>
   
