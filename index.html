@@ -442,6 +442,92 @@
         
         
             
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/2022/01/04/%E8%A7%A3%E5%86%B3%E9%80%9A%E8%BF%87fstab%E5%BC%80%E6%9C%BA%E6%8C%82%E8%BD%BDsamba%E6%96%87%E4%BB%B6%E5%A4%B9%E5%AF%BC%E8%87%B4%E7%9A%84Database-is-locked%E9%97%AE%E9%A2%98/">
+                
+                <span class="abstract-title-text">解决通过fstab开机挂载samba文件夹导致的Database is locked问题</span>
+            </a>
+            <div class="abstract-content">
+                前言发现在使用fstab开机挂载的samba文件夹会有Database is locked的问题，如通过docker安装的nginx-proxy-manager和qiandao，因为默认使用了sqlite的数据库，会导致Database is locked问题，如下图：
+
+
+
+
+
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/01/04">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/01/04</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="network ups tools">network ups tools</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="nut">nut</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="ups">ups</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/2022/01/03/Proxmox-VE%E9%80%9A%E8%BF%87nut%E8%AE%BE%E7%BD%AEups%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%94%B5%E5%90%8E%E5%BB%B6%E6%97%B6%E5%85%B3%E6%9C%BA/">
+                
+                <span class="abstract-title-text">Proxmox VE通过nut设置ups客户端实现断电后延时关机</span>
+            </a>
+            <div class="abstract-content">
+                设置断电后执行脚本使用nano命令nano /etc/nut/nut.conf进入nut.conf（下面类似，不再重复），设置nut模式为netclient。
+1MODE=netclient
+
+进入/etc/nut/upsmon.conf修改配置文件，设置nut模式为slave，ups替换为你server端的名称，10.10.10.2替换为你的远程ups server的ip，upsmon替换为你server端的用户名，pass替换为你server端的密码。格式：MONITOR {ups server 的名称}@{UPS 服务器地址} {可用 UPS 数量} {用户名} {密码} {设备模...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/01/03">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/01/03</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="network ups tools">network ups tools</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="nut">nut</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="ups">ups</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
             
         
         <article class="index-post">
@@ -744,7 +830,21 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
         
         
         
@@ -755,7 +855,7 @@
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 3
+        Total : 5
         </div>
         <!-- search  -->
         
@@ -769,6 +869,18 @@
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/04</span>
+            <a class="archive-post-title" href="/2022/01/04/%E8%A7%A3%E5%86%B3%E9%80%9A%E8%BF%87fstab%E5%BC%80%E6%9C%BA%E6%8C%82%E8%BD%BDsamba%E6%96%87%E4%BB%B6%E5%A4%B9%E5%AF%BC%E8%87%B4%E7%9A%84Database-is-locked%E9%97%AE%E9%A2%98/">解决通过fstab开机挂载samba文件夹导致的Database is locked问题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/03</span>
+            <a class="archive-post-title" href="/2022/01/03/Proxmox-VE%E9%80%9A%E8%BF%87nut%E8%AE%BE%E7%BD%AEups%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E7%8E%B0%E6%96%AD%E7%94%B5%E5%90%8E%E5%BB%B6%E6%97%B6%E5%85%B3%E6%9C%BA/">Proxmox VE通过nut设置ups客户端实现断电后延时关机</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">01/01</span>
@@ -832,6 +944,21 @@
                 DIY
             </span>
         
+            <span class="sidebar-tag-name" data-tags="network ups tools">
+                <span class="iconfont-archer">&#xe606;</span>
+                network ups tools
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="nut">
+                <span class="iconfont-archer">&#xe606;</span>
+                nut
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="ups">
+                <span class="iconfont-archer">&#xe606;</span>
+                ups
+            </span>
+        
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
     <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
@@ -856,6 +983,11 @@
         <span class="sidebar-category-name" data-categories="DIY">
             <span class="iconfont-archer">&#xe60a;</span>
             DIY
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="ups">
+            <span class="iconfont-archer">&#xe60a;</span>
+            ups
         </span>
     
     </div>
