@@ -20,7 +20,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用docker搭建nginx proxy manager实现反向代理和SSL证书申请">
 <meta property="og:url" content="https://sunjx97.github.io/2022/01/01/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAnginx-proxy-manager%E5%AE%9E%E7%8E%B0%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8CSSL%E8%AF%81%E4%B9%A6%E7%94%B3%E8%AF%B7/index.html">
-<meta property="og:site_name" content="sunjx97的个人博客">
+<meta property="og:site_name" content="sunjx97&#39;s Blog">
 <meta property="og:description" content="自从入坑NAS以来，（黑）群晖一直都是我文件存储管理的得力助手。但随着我的学习和理解不断加深，黑裙已不能满足我的需求。如今，是时候告别（黑）群晖，往更专业的自建服务器方向发展了。其中关键的一步，便是找到能方便替换群晖反向代理服务的开源项目，而nginx proxy manager给了我一个很好的选择。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx%20proxy%20manager%2001.png">
@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx%20proxy%20manager设置SSL证书%20DNS-01%2002.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx%20proxy%20manager设置SSL证书%20DNS-01%2003.png">
 <meta property="article:published_time" content="2022-01-01T03:12:37.000Z">
-<meta property="article:modified_time" content="2022-02-12T13:10:14.836Z">
+<meta property="article:modified_time" content="2022-02-16T11:55:42.238Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="反向代理">
 <meta property="article:tag" content="SSL">
@@ -49,7 +49,7 @@
 <meta name="twitter:image" content="https://sunjx97.github.io/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx%20proxy%20manager%2001.png">
   
   
-  <title>使用docker搭建nginx proxy manager实现反向代理和SSL证书申请 - sunjx97的个人博客</title>
+  <title>使用docker搭建nginx proxy manager实现反向代理和SSL证书申请 - sunjx97&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -90,7 +90,7 @@
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.4.1"><link rel="alternate" href="/atom.xml" title="sunjx97的个人博客" type="application/atom+xml">
+<meta name="generator" content="Hexo 5.4.1"><link rel="alternate" href="/atom.xml" title="sunjx97's Blog" type="application/atom+xml">
 </head>
 
 
@@ -263,7 +263,7 @@
 <h2 id="docker安装nginx-proxy-manager"><a href="#docker安装nginx-proxy-manager" class="headerlink" title="docker安装nginx proxy manager"></a>docker安装nginx proxy manager</h2><p>推荐使用docker-compose安装</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">app:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">&#x27;jc21/nginx-proxy-manager:latest&#x27;</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-comment"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;80:80&#x27;</span> <span class="hljs-comment"># Public HTTP Port</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;443:443&#x27;</span> <span class="hljs-comment"># Public HTTPS Port</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;81:81&#x27;</span> <span class="hljs-comment"># Admin Web Port</span><br>      <span class="hljs-comment"># Add any other Stream port you want to expose</span><br>      <span class="hljs-comment"># - &#x27;21:21&#x27; # FTP</span><br><br>    <span class="hljs-comment"># Uncomment the next line if you uncomment anything in the section</span><br>    <span class="hljs-comment"># environment:</span><br>      <span class="hljs-comment"># Uncomment this if you want to change the location of </span><br>      <span class="hljs-comment"># the SQLite DB file within the container</span><br>      <span class="hljs-comment"># DB_SQLITE_FILE: &quot;/data/database.sqlite&quot;</span><br><br>      <span class="hljs-comment"># Uncomment this if IPv6 is not enabled on your host</span><br>      <span class="hljs-comment"># DISABLE_IPV6: &#x27;true&#x27;</span><br><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./data:/data</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./letsencrypt:/etc/letsencrypt</span><br></code></pre></td></tr></table></figure>
 
-<p>浏览器输入【docker主机ip:81】，成功进入web页面，初次登录使用邮箱：<a href="mailto:&#x61;&#x64;&#109;&#x69;&#x6e;&#x40;&#101;&#x78;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#x63;&#111;&#109;">&#x61;&#x64;&#109;&#x69;&#x6e;&#x40;&#101;&#x78;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#x63;&#111;&#109;</a>，密码：changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 01.png" srcset="/img/loading.gif" lazyload /></p>
+<p>浏览器输入【docker主机ip:81】，成功进入web页面，初次登录使用邮箱：<a href="mailto:&#x61;&#x64;&#x6d;&#x69;&#110;&#x40;&#101;&#120;&#x61;&#109;&#112;&#x6c;&#101;&#x2e;&#99;&#x6f;&#x6d;">&#x61;&#x64;&#x6d;&#x69;&#110;&#x40;&#101;&#120;&#x61;&#109;&#112;&#x6c;&#101;&#x2e;&#99;&#x6f;&#x6d;</a>，密码：changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 01.png" srcset="/img/loading.gif" lazyload /></p>
 <p>登录进去后会让你设置管理员的用户名（Full Name），昵称（Nickname）和邮箱。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 02.png" srcset="/img/loading.gif" lazyload width="60%" /></p>
 <p>接下来设置密码，旧密码即预设密码changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 03.png" srcset="/img/loading.gif" lazyload width="60%" /></p>
 <p>至此，nginx proxy manager初始化完成。</p>
@@ -287,13 +287,13 @@
 <p>已经能在总览看到相关API已申请成功。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/DNSPOD API申请 05.png" srcset="/img/loading.gif" lazyload /></p>
 <h5 id="2-配置nginx-proxy-manager并申请SSL证书"><a href="#2-配置nginx-proxy-manager并申请SSL证书" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>点击SSL Certificates，转到SSL Certificates页面；再点击右上角Add SSL Certificate，选择Let’s Encrypt。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 01.png" srcset="/img/loading.gif" lazyload /></p>
 <p>如下图，Domain names填写自己的域名，Email Address for Let’s Encrypt填写自己的邮箱。</p>
-<p>打开Use a DNS Challenge，DNS Provider选择DNSPod，将dns_dnspod_email中的<a href="mailto:&#101;&#109;&#x61;&#x69;&#x6c;&#64;&#101;&#120;&#x61;&#109;&#x70;&#x6c;&#101;&#x2e;&#x63;&#x6f;&#109;">&#101;&#109;&#x61;&#x69;&#x6c;&#64;&#101;&#120;&#x61;&#109;&#x70;&#x6c;&#101;&#x2e;&#x63;&#x6f;&#109;</a>替换为DNSPod的邮箱，dns_dnspod_api_token中的id,key对应填入（即在上一步申请得到的id和token），注意不要删掉英文双引号，且id与token用英文逗号连接。</p>
+<p>打开Use a DNS Challenge，DNS Provider选择DNSPod，将dns_dnspod_email中的<a href="mailto:&#101;&#x6d;&#97;&#x69;&#108;&#x40;&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#x2e;&#x63;&#111;&#x6d;">&#101;&#x6d;&#97;&#x69;&#108;&#x40;&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#x2e;&#x63;&#111;&#x6d;</a>替换为DNSPod的邮箱，dns_dnspod_api_token中的id,key对应填入（即在上一步申请得到的id和token），注意不要删掉英文双引号，且id与token用英文逗号连接。</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">dns_dnspod_email</span> = <span class="hljs-string">&quot;email@example.com&quot;</span><br><span class="hljs-attr">dns_dnspod_api_token</span> = <span class="hljs-string">&quot;id,key&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>勾选I Agree to the Let’s Encrypt Terms of Service同意Let’s Encrypt相关条款，点击保存。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 02.png" srcset="/img/loading.gif" lazyload /></p>
 <p>可以看到SSL证书已经申请完成，有效期3个月，到期会自动续期。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 03.png" srcset="/img/loading.gif" lazyload /></p>
 <h4 id="·-CloudFlare"><a href="#·-CloudFlare" class="headerlink" title="· CloudFlare"></a>· CloudFlare</h4><h5 id="1-获取api-key"><a href="#1-获取api-key" class="headerlink" title="1. 获取api key"></a>1. 获取api key</h5><p>打开<a target="_blank" rel="noopener" href="https://dash.cloudflare.com/profile/api-tokens">个人资料-API令牌</a>，找到<b>API 密钥</b>，查看并复制<b>Global API Key</b>。</p>
-<h5 id="2-配置nginx-proxy-manager并申请SSL证书-1"><a href="#2-配置nginx-proxy-manager并申请SSL证书-1" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>同上，不过要将申请信息进行替换（初始的只有api token的形式申请会有问题）。<a href="mailto:&#115;&#111;&#109;&#x65;&#116;&#x68;&#105;&#x6e;&#103;&#x40;&#x68;&#111;&#x74;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;">&#115;&#111;&#109;&#x65;&#116;&#x68;&#105;&#x6e;&#103;&#x40;&#x68;&#111;&#x74;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#x6d;</a>替换为cloudflare的邮箱，0123456789abcdef0123456789abcdef01234567替换为上面得到的Global API Key。</p>
+<h5 id="2-配置nginx-proxy-manager并申请SSL证书-1"><a href="#2-配置nginx-proxy-manager并申请SSL证书-1" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>同上，不过要将申请信息进行替换（初始的只有api token的形式申请会有问题）。<a href="mailto:&#x73;&#x6f;&#x6d;&#x65;&#116;&#x68;&#105;&#x6e;&#x67;&#x40;&#104;&#x6f;&#116;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#111;&#x6d;">&#x73;&#x6f;&#x6d;&#x65;&#116;&#x68;&#105;&#x6e;&#x67;&#x40;&#104;&#x6f;&#116;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#111;&#x6d;</a>替换为cloudflare的邮箱，0123456789abcdef0123456789abcdef01234567替换为上面得到的Global API Key。</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># Cloudflare API token</span><br><span class="hljs-attr">dns_cloudflare_email</span> = something@hotmail.com<br><span class="hljs-attr">dns_cloudflare_api_key</span> = <span class="hljs-number">0123456789</span>abcdef0123456789abcdef01234567<br></code></pre></td></tr></table></figure>
 
 <h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="需要开启Websockets-Support的应用-网站"><a href="#需要开启Websockets-Support的应用-网站" class="headerlink" title="需要开启Websockets Support的应用/网站"></a>需要开启Websockets Support的应用/网站</h3><p>Proxmox VE：不开启会导致novnc连接错误<br>jlesage/jdownloader-2：不开启会无法进入webui管理页面<br>truenas：不开启会导致webui无法登录</p>
