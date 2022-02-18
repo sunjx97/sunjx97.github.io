@@ -19,7 +19,7 @@
     <meta name="description" content="初期自建服务器进度完成后，第二步便是实现外网对内网服务的访问（不然岂不是太过鸡肋w)。但苦于总是找不到个万全的方法，因而一直处于搁置状态。如今看到b站 @靛青K 大佬通过ss实现内网服务安全访问的方法，咱灵光一闪，想到通过frp解决没有公网ip问题，进而通过ss实现内网安全访问的思路，于是便有了这篇文章——">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用frp和Shadowsocks实现安全访问内网服务">
-<meta property="og:url" content="https://sunjx97.github.io/%E4%BD%BF%E7%94%A8frp%E5%92%8Cshadowsocks%E5%AE%9E%E7%8E%B0%E5%AE%89%E5%85%A8%E8%AE%BF%E9%97%AE%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:url" content="https://sunjx97.github.io/posts/264d1c83/index.html">
 <meta property="og:site_name" content="sunjx97&#39;s Blog">
 <meta property="og:description" content="初期自建服务器进度完成后，第二步便是实现外网对内网服务的访问（不然岂不是太过鸡肋w)。但苦于总是找不到个万全的方法，因而一直处于搁置状态。如今看到b站 @靛青K 大佬通过ss实现内网服务安全访问的方法，咱灵光一闪，想到通过frp解决没有公网ip问题，进而通过ss实现内网安全访问的思路，于是便有了这篇文章——">
 <meta property="og:locale" content="zh_CN">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/使用frp和shadowsocks实现安全访问内网服务/subconverter生成订阅.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用frp和shadowsocks实现安全访问内网服务/DNS重写.png">
 <meta property="article:published_time" content="2022-02-16T11:19:23.000Z">
-<meta property="article:modified_time" content="2022-02-17T15:01:30.128Z">
+<meta property="article:modified_time" content="2022-02-18T12:54:52.935Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="内网穿透">
 <meta property="article:tag" content="frp">
@@ -279,7 +279,7 @@
 <h4 id="ruleset-设置"><a href="#ruleset-设置" class="headerlink" title="ruleset 设置"></a>ruleset 设置</h4><p>咱这里使用GitHub保存规则文件，同仓库下创建<code>ruleset.list</code>，填入要匹配的的域名或ip。具体规则在<a target="_blank" rel="noopener" href="https://docs.cfw.lbyczf.com/contents/ui/profiles/rules.html">这里</a>。<br>我们这里直接填<code>DOMAIN-SUFFIX,your-domain.com</code>，将<code>your-domain.com</code>替换为你的域名，此行意为以<code>your-domain.com</code>为后缀的域名被匹配。最后保存，点击<code>Raw</code>获得真实地址。</p>
 <p>复制大佬的配置模板，在配置模板中增加以下一行，<code>=</code>后面替换为你的proxy_group名称+规则地址。proxy_group和ruleset名称必须完全一致，否则会报错。注意，规则从上往下匹配，所以最好添加到一列ruleset的<b>最上方</b>。<br><code>ruleset=🏠 家庭内网,https://raw.githubusercontent.com/your_account/your_project/main/rulesets/ruleset.list</code></p>
 <p>该条的含义是：从<code>ruleset.list</code>拉取规则，并将匹配到的流量使用<code>🏠 家庭内网</code>中选中的节点转发。</p>
-<h4 id="proxy-group-设置"><a href="#proxy-group-设置" class="headerlink" title="proxy_group 设置"></a>proxy_group 设置</h4><p>在配置模板中增加以下一行，将<code>GROUPID=3</code>的<code>3</code>换成自己订阅链接/节点的序号（序号<b>从0开始计算</b>）。<br><code>custom_proxy_group=🏠 家庭内网`select`!!GROUPID=3`[]DIRECT`http://www.gstatic.com/generate_204`60,5,50</code></p>
+<h4 id="proxy-group-设置"><a href="#proxy-group-设置" class="headerlink" title="proxy_group 设置"></a>proxy_group 设置</h4><p>在配置模板中增加以下一行，将<code>GROUPID=3</code>的<code>3</code>换成自己订阅链接&#x2F;节点的序号（序号<b>从0开始计算</b>）。<br><code>custom_proxy_group=🏠 家庭内网`select`!!GROUPID=3`[]DIRECT`http://www.gstatic.com/generate_204`60,5,50</code></p>
 <p>该条的含义是：创建一个名为<code>🏠 家庭内网</code>的代理组，使用<code>select</code>模式，添加第4条订阅和DIRECT到该节点组，延迟测速周期60秒，5秒未响应即为超时，延迟容差为50ms。</p>
 <h4 id="获取远程配置地址"><a href="#获取远程配置地址" class="headerlink" title="获取远程配置地址"></a>获取远程配置地址</h4><p>以上两处修改完成后，GitHub创建的远程配置文件页点击<code>Raw</code>获取真实地址。</p>
 <h3 id="Shadowsocks-节点链接生成"><a href="#Shadowsocks-节点链接生成" class="headerlink" title="Shadowsocks 节点链接生成"></a>Shadowsocks 节点链接生成</h3><p>一般使用的ss链接都经过了base64加密，我们这里先生成未加密的节点链接，再加密。</p>
@@ -294,9 +294,9 @@
 <p>这样所有对该域名的DNS请求都会将目标指向反向代理服务器所在ip，DNS设置完毕。</p>
 <h2 id="内网流量转发设置"><a href="#内网流量转发设置" class="headerlink" title="内网流量转发设置"></a>内网流量转发设置</h2><p>现在，你已经可以实现外网访问本地内网服务了。但内网设备clash也会绕这么大一圈来访问内网服务，这不符合我们的初衷。这就需要我们对内网流量转发做额外设置，<del>假装在这个过程中访问了frp服务器并成功转发流量</del>。</p>
 <h3 id="DNS-服务器设置-1"><a href="#DNS-服务器设置-1" class="headerlink" title="DNS 服务器设置"></a>DNS 服务器设置</h3><p>梅开二度，我们又回到了DNS重写，添加域名为frp服务器的域名，ip为反代服务器的ip。</p>
-<h3 id="反代设置-Streams-流量转发"><a href="#反代设置-Streams-流量转发" class="headerlink" title="反代设置 Streams 流量转发"></a>反代设置 Streams 流量转发</h3><p>这里通过Nginx Proxy Manager设置，没有搭建的同学可以查看咱之前的搭建教程：<a href="https://sunjx97.github.io/%E4%BD%BF%E7%94%A8docker%E6%90%AD%E5%BB%BAnginx-proxy-manager%E5%AE%9E%E7%8E%B0%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8CSSL%E8%AF%81%E4%B9%A6%E7%94%B3%E8%AF%B7/">《使用docker搭建nginx proxy manager实现反向代理和SSL证书申请》</a>。</p>
+<h3 id="反代设置-Streams-流量转发"><a href="#反代设置-Streams-流量转发" class="headerlink" title="反代设置 Streams 流量转发"></a>反代设置 Streams 流量转发</h3><p>这里通过Nginx Proxy Manager设置，没有搭建的同学可以查看咱之前的搭建教程：<a href="https://sunjx97.github.io/233f7ebd/">《使用docker搭建nginx proxy manager实现反向代理和SSL证书申请》</a>。</p>
 <p>Nginx的Stream模块工作在第四层，我们可以用来转发tcp、udp数据包。登录管理页面，点击Streams-Add Stream，<code>Incoming Port</code>填frp隧道的<b>远程端口</b>，<code>Forward Host</code>填ss服务端的ip，<code>Forward Port</code>填ss服务端的端口（即上面设置的<code>9000</code>）。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，本教程终于结束了。对于内外网两栖的设备在节点组需要选择自己的ss节点，而内网设备直接选择DIRECT即可，DNS和反代服务器会将流量转发到正确的服务ip和端口。相对于<code>@靛青K</code>大佬直接使用ddns和公网ip搭建ss服务端，这个方法肯定麻烦许多，但对于当前ipv6未全面铺开的情况和大内网的我来说，终归是够用了。<del>所以ipv6时代什么时候来啊(#`O′)/</del></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，本教程终于结束了。对于内外网两栖的设备在节点组需要选择自己的ss节点，而内网设备直接选择DIRECT即可，DNS和反代服务器会将流量转发到正确的服务ip和端口。相对于<code>@靛青K</code>大佬直接使用ddns和公网ip搭建ss服务端，这个方法肯定麻烦许多，但对于当前ipv6未全面铺开的情况和大内网的我来说，终归是够用了。<del>所以ipv6时代什么时候来啊(#&#96;O′)&#x2F;</del></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv9219407">使用 Shadowsocks 访问家庭内网</a><br><a target="_blank" rel="noopener" href="https://doc.natfrp.com/#/frpc/usage/docker">使用 docker 管理 frpc 运行 - SAKURA FRP</a><br><a target="_blank" rel="noopener" href="https://github.com/tindy2013/subconverter/blob/master/README-cn.md">subconverter 官方使用文档</a><br><a target="_blank" rel="noopener" href="https://docs.cfw.lbyczf.com/contents/ui/profiles/rules.html">规则编辑 - Clash for Windows</a><br><a target="_blank" rel="noopener" href="https://blog.kelu.org/tech/2017/04/25/generate-shadowsocks-qrcode.html">shadowsocks 生成二维码 URI</a><br><a target="_blank" rel="noopener" href="https://yjdwbj.github.io/2020/02/12/%E4%BD%BF%E7%94%A8%E5%9B%BD%E5%A4%96VPS%E6%8C%87%E5%8D%97-Linode/#URI%E4%B8%8E%E4%BA%8C%E7%BB%B4%E7%A0%81">URI与二维码 - shadowsocks-libev</a></p>
 
             </div>
@@ -340,7 +340,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/%E8%A7%A3%E5%86%B3transmission%E4%BD%BF%E7%94%A8%E7%BD%91%E7%BB%9C%E5%85%B1%E4%BA%AB%E7%9A%84%E7%9B%91%E6%8E%A7%E7%9B%AE%E5%BD%95%E6%97%B6%E7%9A%84%E7%9B%91%E6%8E%A7%E5%A4%B1%E7%81%B5%E9%97%AE%E9%A2%98/">
+                      <a href="/posts/7133bd05/">
                         <span class="hidden-mobile">解决transmission使用网络共享的监控目录时的监控失灵问题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
