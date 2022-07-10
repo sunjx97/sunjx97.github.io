@@ -49,32 +49,29 @@
 <meta name="twitter:image" content="https://sunjx97.github.io/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx%20proxy%20manager%2001.png">
   
   
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
     <meta name="google-site-verification" content="qhsPCeRQw97HWIW48XFcLF9myWWYosmnLcVRIZE1kE0" />
   
   <title>使用docker搭建nginx proxy manager实现反向代理和SSL证书申请 - sunjx97&#39;s Blog</title>
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
 
-  
-    
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
-    
-  
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
-  
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
 
 
 
@@ -83,22 +80,70 @@
 
 <link  rel="stylesheet" href="/css/main.css" />
 
-<!-- 自定义样式保持在最底部 -->
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
 
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"sunjx97.github.io","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-C3NGZF6Z7J","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sunjx97.github.io","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":"G-C3NGZF6Z7J","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.googletagmanager.com/gtag/js?id=G-C3NGZF6Z7J', function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-C3NGZF6Z7J');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
 <meta name="generator" content="Hexo 5.4.1"><link rel="alternate" href="/atom.xml" title="sunjx97's Blog" type="application/atom+xml">
 </head>
 
 
 <body>
-  <header style="height: 70vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
       <strong>Fluid</strong>
@@ -180,6 +225,7 @@
               &nbsp;<i class="iconfont icon-search"></i>&nbsp;
             </a>
           </li>
+          
         
         
           <li class="nav-item" id="color-toggle-btn">
@@ -192,62 +238,71 @@
   </div>
 </nav>
 
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/84773164_p1.jpg') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="使用docker搭建nginx proxy manager实现反向代理和SSL证书申请">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-01 11:12" pubdate>
-        2022年1月1日 上午
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      3.8k 字
-    </span>
   
 
-  
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-clock-fill"></i>
-      
-      
-      32 分钟
-    </span>
-  
-
-  
-  
-</div>
-�7)m�6=F���S��yy��}Z>]�n�r���hY����ŉ��yۣ�+gRZ/oR��mQ��?I��I���%O7�.�yە�~,�o<^������;�^�a���I�@R�=�a'M�x�I��3�F�s�~�_��[�����%���?�����q��t�;s�MN=����?>�:��Ǽ�Ɖo����鿋xڣHJ���Y�O"�|�a�_��x[[�s�A��o���Q�#z�y�WL4=��?��� ��q�s�z|�-H:�(���ߟ�~�rt=�]�������K"^��$�ʥ$�7μ��a��e<,�O_W�m�:����G�B����W����k�tJ�Iێ*�睔.~|���n�Lx��f�����`�>]lq�pר��\�^(�1�ĖA�Ҕ�S,�=�Ҽ-,Gk�M�2E�oO���5��vݧ������D���������㓎��?H�~�mJҾ趤���E�����2o��`^��sͫ%~=���@t�5*Iۓ��#���/cI�ǷG��߯į?)/%�/�.~Mʼc����c�s���c�ׯ���K"�|�KJ�DR��tYI�6���筟��I���OJ��y�C�q�?H��$���֕��;�h=D�ŏ�W� ��eU��c�-�i�=7G�?�m����M?��?����]��`��������Y|�:����u%��Q$���3~����F��_�x����׷�@��q��~�8�z��,<���g^��X}�� �>~j��ze>��4W�kв䄰�
-��
-���y)��q3�y��2�?�VW����o)o���%<�Oe�5ή���7i$�.ʙ���/����o��2dW>�g����I��$i_%_�r�(����u�y���G/*ߗ�i���V�(O�-xE��N�����e�}�Ƕ�&����ס�����߽3`����l�VsO_�qT�D��S|��a�{䩈Ƥ_�� �J�n_�G?��cO��h4d�h�\#�S0�hǔ�x�J�HFZ�E��۠nk��M'#�L9�	D9��R&��L.O^���4��H9�t�������O8��|O��B}��;�'��Rc���^���{,�S,�Ӵ�%]�⧥�j�7�0����0�;��#XV/�P����I>��-O�<�r�0�W
-}?��~렼�w^�z���a|u��RLh� �a]�z����^*���9w0X�Y-�d4�97q�1o��	e�C*�1�	ϧCJ�R���h��R��x�׋��,{̃!��jlާ��#�z�q����@���x�}�SA�S6��)O�4O�"Q�H�@��eZ9{��JK��hqm�
-�2��,�Y�g܄f�4e�疶�h0�5ic6���Ŷ,O��
-7��~V�;���7�0�Ł�؉j'��00�{I�/�G?�����:�GbI����e��Q*8T���%��yj�7^2&���j�����棉�i��5�1��)�Y��)�&�B�;��Do7i��G��>MZ�^�ʹM�=ʳ(��c�q�Is��\�S,�)��l�L^�9�~o@�V�&�L|�4��XЧ�v�jKY*���E�s��2b�N�:��ql0�tY�^wv/��v��[픫Pqq��,CS�#��gy������*�[�Q�R$��#�vi�����@�K����2�5?GU��F�0�0�'I�|�w�@Ev(�"�=����e��N�cY%��X�b�p��"��~ȏ�����*����b�h����	t�0N?*.1���Ac����kM��ӹ����ti�l�do�2�:M7Q��K�1eXD�si���-r��X�r��"<M�T��tZ�`4�~�:��>��N(��7�]�}wS�=����F�P�r�6a�͚��G^�J�f-�k��-���+�ci��),�,�}��sF�)uz,⹙�}�qKߧ<MreJ-oPze���˴p�<��E*UJ\����g��u=h�ɹ�c���V8�?/�� �aƗG��xG��u$�a`7p@
-            
-          </div>
-
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/84773164_p1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用docker搭建nginx proxy manager实现反向代理和SSL证书申请"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-01-01 11:12" pubdate>
+          2022年1月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          undefined 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          NaN 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
+  </div>
+</div>
+
+</div>
+
   </header>
 
   <main>
@@ -256,21 +311,27 @@
 
 <div class="container-fluid nopadding-x">
   <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
     <div class="col-lg-8 nopadding-x-md">
       <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
+        <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
             <h1 style="display: none">使用docker搭建nginx proxy manager实现反向代理和SSL证书申请</h1>
             
-            <div class="markdown-body">
-              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自从入坑NAS以来，（黑）群晖一直都是我文件存储管理的得力助手。但随着我的<del>圈内吹水日益熟练</del>学习和理解不断加深，黑裙已不能满足我的需求。如今，是时候告别（黑）群晖，往更专业的自建服务器方向发展了。其中关键的一步，便是找到能方便替换群晖反向代理服务的开源项目，而nginx proxy manager给了我一个很好的选择。</p>
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自从入坑NAS以来，（黑）群晖一直都是我文件存储管理的得力助手。但随着我的<del>圈内吹水日益熟练</del>学习和理解不断加深，黑裙已不能满足我的需求。如今，是时候告别（黑）群晖，往更专业的自建服务器方向发展了。其中关键的一步，便是找到能方便替换群晖反向代理服务的开源项目，而nginx proxy manager给了我一个很好的选择。</p>
 <h2 id="nginx-proxy-manager介绍"><a href="#nginx-proxy-manager介绍" class="headerlink" title="nginx proxy manager介绍"></a>nginx proxy manager介绍</h2><p>nginx proxy manager能让我们轻松地转发到在家里或其他地方运行的网站，包括免费的SSL，而不需要对Nginx或Letsencrypt了解太多。便捷直观的web页面管理和操作无疑大大简化了一般nginx反代服务的步骤。</p>
 <h2 id="docker安装nginx-proxy-manager"><a href="#docker安装nginx-proxy-manager" class="headerlink" title="docker安装nginx proxy manager"></a>docker安装nginx proxy manager</h2><p>推荐使用docker-compose安装</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></div></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">app:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">&#x27;jc21/nginx-proxy-manager:latest&#x27;</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-comment"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;80:80&#x27;</span> <span class="hljs-comment"># Public HTTP Port</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;443:443&#x27;</span> <span class="hljs-comment"># Public HTTPS Port</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&#x27;81:81&#x27;</span> <span class="hljs-comment"># Admin Web Port</span><br>      <span class="hljs-comment"># Add any other Stream port you want to expose</span><br>      <span class="hljs-comment"># - &#x27;21:21&#x27; # FTP</span><br><br>    <span class="hljs-comment"># Uncomment the next line if you uncomment anything in the section</span><br>    <span class="hljs-comment"># environment:</span><br>      <span class="hljs-comment"># Uncomment this if you want to change the location of </span><br>      <span class="hljs-comment"># the SQLite DB file within the container</span><br>      <span class="hljs-comment"># DB_SQLITE_FILE: &quot;/data/database.sqlite&quot;</span><br><br>      <span class="hljs-comment"># Uncomment this if IPv6 is not enabled on your host</span><br>      <span class="hljs-comment"># DISABLE_IPV6: &#x27;true&#x27;</span><br><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./data:/data</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./letsencrypt:/etc/letsencrypt</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">&#x27;jc21/nginx-proxy-manager:latest&#x27;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="comment"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;80:80&#x27;</span> <span class="comment"># Public HTTP Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;443:443&#x27;</span> <span class="comment"># Public HTTPS Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;81:81&#x27;</span> <span class="comment"># Admin Web Port</span></span><br><span class="line">      <span class="comment"># Add any other Stream port you want to expose</span></span><br><span class="line">      <span class="comment"># - &#x27;21:21&#x27; # FTP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Uncomment the next line if you uncomment anything in the section</span></span><br><span class="line">    <span class="comment"># environment:</span></span><br><span class="line">      <span class="comment"># Uncomment this if you want to change the location of </span></span><br><span class="line">      <span class="comment"># the SQLite DB file within the container</span></span><br><span class="line">      <span class="comment"># DB_SQLITE_FILE: &quot;/data/database.sqlite&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># Uncomment this if IPv6 is not enabled on your host</span></span><br><span class="line">      <span class="comment"># DISABLE_IPV6: &#x27;true&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./letsencrypt:/etc/letsencrypt</span></span><br></pre></td></tr></table></figure>
 
-<p>浏览器输入【docker主机ip:81】，成功进入web页面，初次登录使用邮箱：<a href="mailto:&#97;&#100;&#109;&#x69;&#110;&#64;&#101;&#x78;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#99;&#111;&#109;">&#97;&#100;&#109;&#x69;&#110;&#64;&#101;&#x78;&#x61;&#x6d;&#x70;&#x6c;&#x65;&#46;&#99;&#111;&#109;</a>，密码：changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 01.png" srcset="/img/loading.gif" lazyload /></p>
+<p>浏览器输入【docker主机ip:81】，成功进入web页面，初次登录使用邮箱：<a href="mailto:&#x61;&#x64;&#x6d;&#105;&#x6e;&#64;&#x65;&#120;&#97;&#109;&#112;&#x6c;&#101;&#46;&#x63;&#x6f;&#x6d;">&#x61;&#x64;&#x6d;&#105;&#x6e;&#64;&#x65;&#120;&#97;&#109;&#112;&#x6c;&#101;&#46;&#x63;&#x6f;&#x6d;</a>，密码：changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 01.png" srcset="/img/loading.gif" lazyload /></p>
 <p>登录进去后会让你设置管理员的用户名（Full Name），昵称（Nickname）和邮箱。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 02.png" srcset="/img/loading.gif" lazyload width="60%" /></p>
 <p>接下来设置密码，旧密码即预设密码changeme。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/通过docker安装nginx proxy manager 03.png" srcset="/img/loading.gif" lazyload width="60%" /></p>
 <p>至此，nginx proxy manager初始化完成。</p>
@@ -294,54 +355,114 @@
 <p>已经能在总览看到相关API已申请成功。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/DNSPOD API申请 05.png" srcset="/img/loading.gif" lazyload /></p>
 <h5 id="2-配置nginx-proxy-manager并申请SSL证书"><a href="#2-配置nginx-proxy-manager并申请SSL证书" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>点击SSL Certificates，转到SSL Certificates页面；再点击右上角Add SSL Certificate，选择Let’s Encrypt。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 01.png" srcset="/img/loading.gif" lazyload /></p>
 <p>如下图，Domain names填写自己的域名，Email Address for Let’s Encrypt填写自己的邮箱。</p>
-<p>打开Use a DNS Challenge，DNS Provider选择DNSPod，将dns_dnspod_email中的<a href="mailto:&#101;&#x6d;&#x61;&#105;&#x6c;&#x40;&#101;&#120;&#97;&#109;&#112;&#x6c;&#x65;&#x2e;&#x63;&#x6f;&#109;">&#101;&#x6d;&#x61;&#105;&#x6c;&#x40;&#101;&#120;&#97;&#109;&#112;&#x6c;&#x65;&#x2e;&#x63;&#x6f;&#109;</a>替换为DNSPod的邮箱，dns_dnspod_api_token中的id,key对应填入（即在上一步申请得到的id和token），注意不要删掉英文双引号，且id与token用英文逗号连接。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">dns_dnspod_email</span> = <span class="hljs-string">&quot;email@example.com&quot;</span><br><span class="hljs-attr">dns_dnspod_api_token</span> = <span class="hljs-string">&quot;id,key&quot;</span><br></code></pre></td></tr></table></figure>
+<p>打开Use a DNS Challenge，DNS Provider选择DNSPod，将dns_dnspod_email中的<a href="mailto:&#101;&#x6d;&#97;&#105;&#108;&#x40;&#101;&#x78;&#x61;&#109;&#x70;&#x6c;&#101;&#46;&#x63;&#111;&#x6d;">&#101;&#x6d;&#97;&#105;&#108;&#x40;&#101;&#x78;&#x61;&#109;&#x70;&#x6c;&#101;&#46;&#x63;&#111;&#x6d;</a>替换为DNSPod的邮箱，dns_dnspod_api_token中的id,key对应填入（即在上一步申请得到的id和token），注意不要删掉英文双引号，且id与token用英文逗号连接。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dns_dnspod_email = &quot;email@example.com&quot;</span><br><span class="line">dns_dnspod_api_token = &quot;id,key&quot;</span><br></pre></td></tr></table></figure>
 
 <p>勾选I Agree to the Let’s Encrypt Terms of Service同意Let’s Encrypt相关条款，点击保存。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 02.png" srcset="/img/loading.gif" lazyload /></p>
 <p>可以看到SSL证书已经申请完成，有效期3个月，到期会自动续期。<br><img src="/images/使用docker搭建nginx-proxy-manager实现反向代理和SSL证书申请/nginx proxy manager设置SSL证书 DNS-01 03.png" srcset="/img/loading.gif" lazyload /></p>
 <h4 id="·-CloudFlare"><a href="#·-CloudFlare" class="headerlink" title="· CloudFlare"></a>· CloudFlare</h4><h5 id="1-获取api-key"><a href="#1-获取api-key" class="headerlink" title="1. 获取api key"></a>1. 获取api key</h5><p>打开<a target="_blank" rel="noopener" href="https://dash.cloudflare.com/profile/api-tokens">个人资料-API令牌</a>，找到<b>API 密钥</b>，查看并复制<b>Global API Key</b>。</p>
-<h5 id="2-配置nginx-proxy-manager并申请SSL证书-1"><a href="#2-配置nginx-proxy-manager并申请SSL证书-1" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>同上，不过要将申请信息进行替换（初始的只有api token的形式申请会有问题）。<a href="mailto:&#115;&#111;&#109;&#101;&#116;&#x68;&#x69;&#110;&#x67;&#x40;&#104;&#111;&#116;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#115;&#111;&#109;&#101;&#116;&#x68;&#x69;&#110;&#x67;&#x40;&#104;&#111;&#116;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;</a>替换为cloudflare的邮箱，0123456789abcdef0123456789abcdef01234567替换为上面得到的Global API Key。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># Cloudflare API token</span><br><span class="hljs-attr">dns_cloudflare_email</span> = something@hotmail.com<br><span class="hljs-attr">dns_cloudflare_api_key</span> = <span class="hljs-number">0123456789</span>abcdef0123456789abcdef01234567<br></code></pre></td></tr></table></figure>
+<h5 id="2-配置nginx-proxy-manager并申请SSL证书-1"><a href="#2-配置nginx-proxy-manager并申请SSL证书-1" class="headerlink" title="2. 配置nginx proxy manager并申请SSL证书"></a>2. 配置nginx proxy manager并申请SSL证书</h5><p>同上，不过要将申请信息进行替换（初始的只有api token的形式申请会有问题）。<a href="mailto:&#115;&#x6f;&#x6d;&#101;&#x74;&#x68;&#105;&#110;&#x67;&#x40;&#104;&#x6f;&#116;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#115;&#x6f;&#x6d;&#101;&#x74;&#x68;&#105;&#110;&#x67;&#x40;&#104;&#x6f;&#116;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a>替换为cloudflare的邮箱，0123456789abcdef0123456789abcdef01234567替换为上面得到的Global API Key。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Cloudflare API token</span><br><span class="line">dns_cloudflare_email = something@hotmail.com</span><br><span class="line">dns_cloudflare_api_key = 0123456789abcdef0123456789abcdef01234567</span><br></pre></td></tr></table></figure>
 
 <h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="需要开启Websockets-Support的应用-x2F-网站"><a href="#需要开启Websockets-Support的应用-x2F-网站" class="headerlink" title="需要开启Websockets Support的应用&#x2F;网站"></a>需要开启Websockets Support的应用&#x2F;网站</h3><p>Proxmox VE：不开启会导致novnc连接错误<br>jlesage&#x2F;jdownloader-2：不开启会无法进入webui管理页面<br>truenas：不开启会导致webui无法登录</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://nginxproxymanager.com/guide/#project-goal">Nginx Proxy Manager</a><br><a target="_blank" rel="noopener" href="https://letsencrypt.org/zh-cn/docs/challenge-types/">验证方式 - Let’s Encrypt</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Gg411w7kQ">【Docker系列】一个反向代理神器——Nginx Proxy Manager</a><br><a target="_blank" rel="noopener" href="https://blog.laoda.de/archives/nginxproxymanager">【Docker系列】一个反向代理神器——Nginx Proxy Manager</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/659dc904967f">certbot dns插件</a><br><a target="_blank" rel="noopener" href="https://github.com/NginxProxyManager/nginx-proxy-manager/issues/680#issuecomment-722016183">Cannot get Let’s Encrypt cert via cloudflare dns challange</a><br><a target="_blank" rel="noopener" href="https://www.sio.moe/2021/12/18/computer/Docker-Container/Use-Docker-to-install-Nginx-ProxyManager-for-SSL-reverse-proxy/">使用Docker安裝Nginx-ProxyManager進行SSL反向代理</a></p>
 
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/selfhosted/">selfhosted</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">反向代理</a>
-                    
-                      <a class="hover-with-bg" href="/tags/SSL/">SSL</a>
-                    
-                  </div>
                 
               </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/selfhosted/" class="category-chain-item">selfhosted</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">#反向代理</a>
+      
+        <a href="/tags/SSL/">#SSL</a>
+      
+    </div>
+  
+</div>
+
+
               
-                <p class="note note-warning">
-                  
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
-                  
-                </p>
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用docker搭建nginx proxy manager实现反向代理和SSL证书申请</div>
+      <div>https://sunjx97.github.io/posts/233f7ebd/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>sunjx97</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年1月1日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+              <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                <i class="iconfont icon-sa"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
               
-              
-                <div class="post-prevnext">
+                <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/posts/b040efc9/">
+                      <a href="/posts/b040efc9/" title="蜗牛星际A款机箱的六盘位改造">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">蜗牛星际A款机箱的六盘位改造</span>
                         <span class="visible-mobile">上一篇</span>
@@ -351,7 +472,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/posts/402aacbe/">
+                      <a href="/posts/402aacbe/" title="Transmission 2.94升级3.00 跳过启动校验">
                         <span class="hidden-mobile">Transmission 2.94升级3.00 跳过启动校验</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -363,16 +484,12 @@
             </div>
 
             
-              <!-- Comments -->
-              <article class="comments" id="comments" lazyload>
-                
-                  
-                
-                
+  <article id="comments" lazyload>
+    
   <div id="valine"></div>
   <script type="text/javascript">
     Fluid.utils.loadComments('#valine', function() {
-      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.4.17/Valine.min.js', function() {
         var options = Object.assign(
           {"appId":"bcdoxfQpOg5UfFVpX6Vfv15C-MdYXbMMI","appKey":"aLUaNiUMtSo0HaOGPkfP2ukh","path":"window.location.pathname","placeholder":"在此输入评论~","avatar":"retro","meta":["nick","mail","link"],"requiredFields":["nick","mail"],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://bcdoxfqp.api.lncldglobal.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
           {
@@ -382,7 +499,9 @@
         )
         new Valine(options);
         Fluid.utils.waitElementVisible('#valine .vcontent', () => {
-          Fluid.plugins.initFancyBox('#valine .vcontent img:not(.vemoji)');
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
         })
       });
     });
@@ -390,25 +509,57 @@
   <noscript>Please enable JavaScript to view the comments</noscript>
 
 
-              </article>
-            
+  </article>
+
+
           </article>
         </div>
       </div>
     </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
   <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-<!-- Custom -->
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
 
 
     
@@ -433,59 +584,61 @@
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
   </div>
 </div>
+
     
 
     
   </main>
 
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-  </div>
+  <footer>
+    <div class="footer-inner">
   
-  <div class="statistics">
-    
-    
-
-    
-      
-        <!-- 不蒜子统计PV -->
-        <span id="busuanzi_container_site_pv" style="display: none">
-            总访问量 
-            <span id="busuanzi_value_site_pv"></span>
-             次
-          </span>
-      
-      
-        <!-- 不蒜子统计UV -->
-        <span id="busuanzi_container_site_uv" style="display: none">
-            总访客数 
-            <span id="busuanzi_value_site_uv"></span>
-             人
-          </span>
-      
-    
-  </div>
-
-
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
   
 
   
-</footer>
-
-
-  <!-- SCRIPTS -->
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
   
-  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
 
   <script>
     NProgress.configure({"showSpinner":false,"trickleSpeed":100})
@@ -496,15 +649,27 @@
   </script>
 
 
-<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
-<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
-<!-- Plugins -->
 
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-  <script  src="/js/local-search.js" ></script>
 
 
 
@@ -514,80 +679,90 @@
 
 
 
-  
-
-
 
   
-    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
-  
-  
-    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
-  
-  
-    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
-  
-  
-    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
-  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
 
 
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
   <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
 
 
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-        typing(title);
-      
-    })(window, document);
-  </script>
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-    <!-- Google gtag.js -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C3NGZF6Z7J"></script>
-    <script defer>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-C3NGZF6Z7J');
-    </script>
-  
-
-  
-
-  
-
-  
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
 <script  src="/js/boot.js" ></script>
 
 
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
