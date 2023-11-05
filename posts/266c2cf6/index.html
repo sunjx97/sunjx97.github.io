@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/ipv6%20环境下的家庭网络维护/防火墙放行入站流量.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/ipv6%20环境下的家庭网络维护/npm%20stream%20模块转发流量.png">
 <meta property="article:published_time" content="2023-11-05T03:35:04.000Z">
-<meta property="article:modified_time" content="2023-11-05T09:40:13.658Z">
+<meta property="article:modified_time" content="2023-11-05T09:41:44.791Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="transmission">
 <meta property="article:tag" content="docker">
@@ -341,7 +341,7 @@
 
 
 <h3 id="ADGaurd-home-配置"><a href="#ADGaurd-home-配置" class="headerlink" title="ADGaurd home 配置"></a>ADGaurd home 配置</h3><p>我开启 ipv6 主要是为了在 bt&#x2F;pt 时能获得更好的连接性，以及能在外访问家中的服务。当下 ipv6 建设并不完善，ipv6 优先的话有时会导致网速变慢和部分网页组件无法加载等问题，<del>且 clash 对 ipv6 的支持并不好，</del>所以我还是只使用 ipv4 的 dns 服务。</p>
-<p>通过<code>设置</code> - <code>DNS 设置</code> - <code>DNS 服务配置</code>项，我们可以关闭 ipv6 地址解析。<br>勾选<b>禁用 IPv6 地址的解析</b>即可。<br><img src="/images/ipv6 环境下的家庭网络维护/禁用 ipv6 的 dns 解析.png" srcset="/img/loading.gif" lazyload /></p>
+<p>通过 <code>设置</code> - <code>DNS 设置</code> - <code>DNS 服务配置</code> 项，我们可以关闭 ipv6 地址解析。<br>勾选<b>禁用 IPv6 地址的解析</b>即可。<br><img src="/images/ipv6 环境下的家庭网络维护/禁用 ipv6 的 dns 解析.png" srcset="/img/loading.gif" lazyload /></p>
 <h2 id="docker-容器开启-ipv6"><a href="#docker-容器开启-ipv6" class="headerlink" title="docker 容器开启 ipv6"></a>docker 容器开启 ipv6</h2><p>相较于 docker 默认的 bridge 网络模式，macvlan 可以控制创建容器时的 ip 地址，方便我们针对 ip 地址进行更精细的操作。我们可以在 docker 中创建 macvlan 网络时添加参数，使之默认支持 ipv6。<br>注：下文提及的所有 docker 容器均使用 macvlan 网络，且获得了独立的公网 ipv6 地址。</p>
 <h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>在创建 macvlan 时，只指定 ipv6 的局域网网段，但<b>不配置 ipv6 网关</b>。此时本 macvlan 网络创建的容器，其 ipv6 的公网地址和网关将通过 SLAAC 从路由器获得。</p>
 <h3 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h3><h4 id="查看宿主机网卡名称"><a href="#查看宿主机网卡名称" class="headerlink" title="查看宿主机网卡名称"></a>查看宿主机网卡名称</h4><p>打开安装 docker 的宿主机，先查询网卡&#x2F;接口名称。<br>执行以下命令：<code>ifconfig</code>，结合 ip 地址，可以看到我这里的网卡名为<code>ens18</code>。<br><img src="/images/ipv6 环境下的家庭网络维护/查看宿主机网卡名称.png" srcset="/img/loading.gif" lazyload width="75%" /></p>
@@ -352,7 +352,7 @@
 <li>【内网 v4 网段（CIDR）】以 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/cidr/">CIDR 格式</a>。<br>如内网为从 <code>192.168.1.1</code> 到 <code>192.168.1.255</code>，则写成这样的形式：<code>192.168.0.0/24</code>。</li>
 <li>【内网 v4 网关】即你的内网网关，一般为路由器地址。</li>
 </ul>
-<p>假定网关为<code>192.168.1.1</code>，那么应写成：</p>
+<p>假定网关为 <code>192.168.1.1</code>，那么应写成：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network create -d macvlan –ipv6 –subnet=192.168.0.0/24 –gateway=192.168.1.1 –subnet=fd00::/64 -o parent=ens18 test1br0<br></code></pre></td></tr></table></figure>
 <p>用该命令创建名为 <code>test1br0</code> 的 macvlan 网络，仅后所有用到该网络创建的 docker 容器都会有 ipv6 地址。</p>
 <h2 id="内网服务暴露"><a href="#内网服务暴露" class="headerlink" title="内网服务暴露"></a>内网服务暴露</h2><h3 id="ipv6-流量转发"><a href="#ipv6-流量转发" class="headerlink" title="ipv6 流量转发"></a>ipv6 流量转发</h3><p>因为 ipv6 完全暴露到公网，所以默认情况下路由器会开启 ipv6 防火墙，只允许内部的设备向外访问 ipv6 地址，而不允许外部访问内部。<del>像这样如果在 bt 时，两端都开启 ipv6 防火墙就寄了，防火墙阻隔了对方发起 ipv6 访问的请求。</del></p>
@@ -381,14 +381,14 @@
 <h4 id="ddns"><a href="#ddns" class="headerlink" title="ddns"></a>ddns</h4><p>这里使用 Openwrt 自带的 ddns-go 来更新路由器 ipv6 地址。</p>
 <p>选择你的 dns 服务商，填好相关信息。<br><img src="/images/ipv6 环境下的家庭网络维护/配置 dns 服务商.png" srcset="/img/loading.gif" lazyload width="70%" /></p>
 <p>这里之开启 ipv6 的 ddns 服务。如下选择好，等待更新。<br><img src="/images/ipv6 环境下的家庭网络维护/开启 ipv6 的 ddns.png" srcset="/img/loading.gif" lazyload width="70%" /></p>
-<h4 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h4><p>选择 <code>网络</code> - <code>端口转发</code>，添加一条端口转发规则。<br>将入站的端口为<code>9000</code>的 ipv6 流量转发给本地 Shadowsocks 对应的 ip 和端口。</p>
+<h4 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h4><p>选择 <code>网络</code> - <code>端口转发</code>，添加一条端口转发规则。<br>将入站的端口为 <code>9000</code> 的 ipv6 流量转发给本地 Shadowsocks 对应的 ip 和端口。</p>
 <img src="/images/ipv6 环境下的家庭网络维护/对特定端口流量转发.png" srcset="/img/loading.gif" lazyload />
 
 
 <h4 id="路由器防火墙配置-1"><a href="#路由器防火墙配置-1" class="headerlink" title="路由器防火墙配置"></a>路由器防火墙配置</h4><p><del>不知道为什么前面端口转发勾选的打开防火墙端口没有生效，</del>所以这里在防火墙再开启一下相应端口的流量<b>入站</b>。</p>
 <img src="/images/ipv6 环境下的家庭网络维护/防火墙放行入站流量.png" srcset="/img/loading.gif" lazyload />
 
-<h4 id="针对局域网内访问的优化"><a href="#针对局域网内访问的优化" class="headerlink" title="针对局域网内访问的优化"></a>针对局域网内访问的优化</h4><h5 id="ADGaurd-home-配置-DNS-重写"><a href="#ADGaurd-home-配置-DNS-重写" class="headerlink" title="ADGaurd home 配置 DNS 重写"></a>ADGaurd home 配置 DNS 重写</h5><p>因为关闭了 ipv6 的 dns 解析，我们这里设置 DNS 重写。<br>在<code>过滤器</code> - <code>DNS 重写</code>页面，可以很方便的添加一条规则，将所有访问对 Shadowsocks 节点域名的请求转发给内网的 Shadowsocks 服务。<del>我使用泛域名统一转发给了 Nginx Proxy Mananger</del></p>
+<h4 id="针对局域网内访问的优化"><a href="#针对局域网内访问的优化" class="headerlink" title="针对局域网内访问的优化"></a>针对局域网内访问的优化</h4><h5 id="ADGaurd-home-配置-DNS-重写"><a href="#ADGaurd-home-配置-DNS-重写" class="headerlink" title="ADGaurd home 配置 DNS 重写"></a>ADGaurd home 配置 DNS 重写</h5><p>因为关闭了 ipv6 的 dns 解析，我们这里设置 DNS 重写。<br>在 <code>过滤器</code> - <code>DNS 重写</code> 页面，可以很方便的添加一条规则，将所有访问对 Shadowsocks 节点域名的请求转发给内网的 Shadowsocks 服务。<del>我使用泛域名统一转发给了 Nginx Proxy Mananger</del></p>
 <h5 id="Nginx-Proxy-Mananger-转发流量"><a href="#Nginx-Proxy-Mananger-转发流量" class="headerlink" title="Nginx Proxy Mananger 转发流量"></a>Nginx Proxy Mananger 转发流量</h5><p>因为我用泛域名将所有请求转发给了 Nginx Proxy Mananger，所以这里在 Nginx Proxy Mananger 多添加一条 Stream 的转发。<br>因为我 Shadowsocks 服务的端口为 <code>9000</code>，所以我将 <code>9000</code> 端口的请求再转发到内网的 Shadowsocks 服务。</p>
 <img src="/images/ipv6 环境下的家庭网络维护/npm stream 模块转发流量.png" srcset="/img/loading.gif" lazyload />
 
