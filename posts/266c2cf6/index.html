@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/ipv6%20环境下的家庭网络维护/防火墙放行入站流量.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/ipv6%20环境下的家庭网络维护/npm%20stream%20模块转发流量.png">
 <meta property="article:published_time" content="2023-11-05T03:35:04.000Z">
-<meta property="article:modified_time" content="2023-11-05T09:39:17.689Z">
+<meta property="article:modified_time" content="2023-11-05T09:40:13.658Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="transmission">
 <meta property="article:tag" content="docker">
@@ -349,12 +349,12 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network create -d macvlan –ipv6 –subnet=【内网 v4 网段（CIDR）】 –gateway=【内网 v4 网关】 –subnet=fd00::/64 -o parent=【宿主机网卡名称】 【macvlan 网络名】<br></code></pre></td></tr></table></figure>
 
 <ul>
-<li>【内网 v4 网段（CIDR）】以 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/cidr/">CIDR 格式</a>。<br>如内网为从<code>192.168.1.1</code>到<code>192.168.1.255</code>，则写成这样的形式：<code>192.168.0.0/24</code>。</li>
+<li>【内网 v4 网段（CIDR）】以 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/what-is/cidr/">CIDR 格式</a>。<br>如内网为从 <code>192.168.1.1</code> 到 <code>192.168.1.255</code>，则写成这样的形式：<code>192.168.0.0/24</code>。</li>
 <li>【内网 v4 网关】即你的内网网关，一般为路由器地址。</li>
 </ul>
 <p>假定网关为<code>192.168.1.1</code>，那么应写成：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker network create -d macvlan –ipv6 –subnet=192.168.0.0/24 –gateway=192.168.1.1 –subnet=fd00::/64 -o parent=ens18 test1br0<br></code></pre></td></tr></table></figure>
-<p>用该命令创建名为<code>test1br0</code>的 macvlan 网络，仅后所有用到该网络创建的 docker 容器都会有 ipv6 地址。</p>
+<p>用该命令创建名为 <code>test1br0</code> 的 macvlan 网络，仅后所有用到该网络创建的 docker 容器都会有 ipv6 地址。</p>
 <h2 id="内网服务暴露"><a href="#内网服务暴露" class="headerlink" title="内网服务暴露"></a>内网服务暴露</h2><h3 id="ipv6-流量转发"><a href="#ipv6-流量转发" class="headerlink" title="ipv6 流量转发"></a>ipv6 流量转发</h3><p>因为 ipv6 完全暴露到公网，所以默认情况下路由器会开启 ipv6 防火墙，只允许内部的设备向外访问 ipv6 地址，而不允许外部访问内部。<del>像这样如果在 bt 时，两端都开启 ipv6 防火墙就寄了，防火墙阻隔了对方发起 ipv6 访问的请求。</del></p>
 <p>所以我们要配置网关的 ipv6 防火墙，对相关流量进行放行。</p>
 <h4 id="Openwrt-防火墙"><a href="#Openwrt-防火墙" class="headerlink" title="Openwrt 防火墙"></a>Openwrt 防火墙</h4><p>进入 <code>网络</code> - <code>防火墙</code> 模块，我们可以设置 Openwrt 的防火墙。关于防火墙的详细配置可以参看<a target="_blank" rel="noopener" href="https://zt0729.xyz/archives/56/">这篇</a>文章。<br><img src="/images/ipv6 环境下的家庭网络维护/Openwrt 防火墙 常规设置.png" srcset="/img/loading.gif" lazyload width="70%" /></p>
