@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/subconverter生成订阅.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/DNS重写.png">
 <meta property="article:published_time" content="2022-02-16T11:19:23.000Z">
-<meta property="article:modified_time" content="2025-07-09T10:21:28.169Z">
+<meta property="article:modified_time" content="2025-07-09T11:15:53.096Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="内网穿透">
 <meta property="article:tag" content="frp">
@@ -338,7 +338,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d --name frpc-natfrp --restart=always natfrp/frpc -f &lt;启动参数&gt;<br></code></pre></td></tr></table></figure>
 
 <p>使用 portainer-ce 安装也可，值得注意的是运行时参数设置在 Advanced container settings - Command &amp; logging 设置，command 设置为 override 并填入参数，如下图。<br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/portainer-ce创建frpc容器设置.png" srcset="/img/loading.gif" lazyload /></p>
-<h2 id="clash根据规则分流"><a href="#clash根据规则分流" class="headerlink" title="clash根据规则分流"></a>clash根据规则分流</h2><p>我使用 subconverter 生成包含自定义规则的配置文件，subconverter 可以自己搭建也能用别人搭好的，这里推荐一个<a target="_blank" rel="noopener" href="https://acl4ssr-sub.github.io/">ACL4SSR 在线订阅转换</a>。远程配置使用自己的配置文件模板（可以参考大佬的模板），在<code>ruleset</code>和<code>proxy_group</code>对应添加节点和规则。配置完成后转换合并订阅即可。</p>
+<h2 id="clash根据规则分流"><a href="#clash根据规则分流" class="headerlink" title="clash根据规则分流"></a>clash根据规则分流</h2><p>我使用 subconverter 生成包含自定义规则的配置文件，subconverter 可以自己搭建也能用别人搭好的，这里推荐一个 <a target="_blank" rel="noopener" href="https://acl4ssr-sub.github.io/">ACL4SSR 在线订阅转换</a>。远程配置使用自己的配置文件模板（可以参考大佬的模板），在 <code>ruleset</code> 和 <code>proxy_group</code> 对应添加节点和规则。配置完成后转换合并订阅即可。</p>
 <h3 id="subconverter-配置文件模板"><a href="#subconverter-配置文件模板" class="headerlink" title="subconverter 配置文件模板"></a>subconverter 配置文件模板</h3><p>subconverter 可以通过设置远程配置实现定制自己需要的规则分流。咱这里使用 GitHub 存储远程配置文件。<del>这里推荐直接复制大佬的模板，然后在此基础上修改。</del><br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/ACL4SSR_Online配置文件.png" srcset="/img/loading.gif" lazyload /></p>
 <p>推荐几个基础模板：<br><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini">ACL4SSR_Online 默认版 分组比较全(与Github同步)</a><br><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full.ini">ACL4SSR_Online_Full 全分组 重度用户使用(与Github同步)</a></p>
 <p>subconverter 订阅转换设置细则可参考<a target="_blank" rel="noopener" href="https://github.com/tindy2013/subconverter/blob/master/README-cn.md">官方使用文档</a>，这里只讲本教程需要的内容。</p>
@@ -366,8 +366,8 @@
 <h3 id="DNS-服务器设置-1"><a href="#DNS-服务器设置-1" class="headerlink" title="DNS 服务器设置"></a>DNS 服务器设置</h3><p>我们在 DNS 重写中，添加域名为 frp 服务器的域名，ip 为反代服务器的 ip。</p>
 <h3 id="反代设置-Streams-流量转发"><a href="#反代设置-Streams-流量转发" class="headerlink" title="反代设置 Streams 流量转发"></a>反代设置 Streams 流量转发</h3><p>这里通过 Nginx Proxy Manager 设置，没有搭建的同学可以查看咱之前的搭建教程：<a href="https://sunjx97.github.io/posts/233f7ebd/"><em>使用 docker 搭建 nginx proxy manager 实现反向代理和 SSL 证书申请</em></a>。</p>
 <p>Nginx 的 Stream 模块工作在第四层，我们可以用来转发 tcp、udp 数据包。登录管理页面，点击 Streams - Add Stream，<code>Incoming Port</code> 填 frp 隧道的<strong>远程端口</strong>，<code>Forward Host</code> 填 ss 服务端的 ip，<code>Forward Port</code> 填 ss 服务端的端口（即上面设置的<code>9000</code>）。</p>
-<p>设置完毕，此时如果我们回到家里，也不用手动切换为 <code>DIRECT</code>，访问内网服务的数据会自动导向反代服务器，进而转发到 ss 服务回到内网，无需担心浪费frp 的流量。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，本教程终于结束了。对于内外网两栖的设备在节点组需要选择自己的 ss 节点，而内网设备直接选择 <code>DIRECT</code> 即可，DNS 和反代服务器会将流量转发到正确的服务 ip 和端口。相对于 <code>@靛青K</code> 大佬直接使用 ddns 和公网 ip 搭建 ss 服务端，这个方法肯定麻烦许多，但对于当前 ipv6 未全面铺开的情况和大内网的我来说，终归是够用了。<del>所以 ipv6 时代什么时候来啊 (#&#96;O′)&#x2F;</del></p>
+<p>设置完毕，此时如果我们回到家里，也不用手动切换为 DIRECT，访问内网服务的数据会自动导向反代服务器，进而转发到 ss 服务回到内网，无需担心浪费 frp 的流量。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，本教程终于结束了。对于内外网两栖的设备在节点组需要选择自己的 ss 节点，而内网设备直接选择 DIRECT 即可，DNS 和反代服务器会将流量转发到正确的服务 ip 和端口。相对于 <code>@靛青K</code> 大佬直接使用 ddns 和公网 ip 搭建 ss 服务端，这个方法肯定麻烦许多，但对于当前 ipv6 未全面铺开的情况和大内网的我来说，终归是够用了。<del>所以 ipv6 时代什么时候来啊 (#&#96;O′)&#x2F;</del></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv9219407">使用 Shadowsocks 访问家庭内网</a><br><a target="_blank" rel="noopener" href="https://doc.natfrp.com/#/frpc/usage/docker">使用 docker 管理 frpc 运行 - SAKURA FRP</a><br><a target="_blank" rel="noopener" href="https://github.com/tindy2013/subconverter/blob/master/README-cn.md">subconverter 官方使用文档</a><br><a target="_blank" rel="noopener" href="https://docs.cfw.lbyczf.com/contents/ui/profiles/rules.html">规则编辑 - Clash for Windows</a><br><a target="_blank" rel="noopener" href="https://blog.kelu.org/tech/2017/04/25/generate-shadowsocks-qrcode.html">shadowsocks 生成二维码 URI</a><br><a target="_blank" rel="noopener" href="https://yjdwbj.github.io/2020/02/12/%E4%BD%BF%E7%94%A8%E5%9B%BD%E5%A4%96VPS%E6%8C%87%E5%8D%97-Linode/#URI%E4%B8%8E%E4%BA%8C%E7%BB%B4%E7%A0%81">URI与二维码 - shadowsocks-libev</a></p>
 
                 
