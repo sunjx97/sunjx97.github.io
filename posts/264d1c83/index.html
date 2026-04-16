@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/subconverter生成订阅.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/DNS重写.png">
 <meta property="article:published_time" content="2022-02-16T11:19:23.000Z">
-<meta property="article:modified_time" content="2025-07-09T11:15:53.096Z">
+<meta property="article:modified_time" content="2026-04-16T12:03:29.701Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="内网穿透">
 <meta property="article:tag" content="frp">
@@ -262,7 +262,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.4k 字
+          5.2k 字
         
       </span>
     
@@ -273,7 +273,7 @@
         
         
         
-          37 分钟
+          44 分钟
         
       </span>
     
@@ -318,7 +318,7 @@
                 
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>初期自建服务器进度完成后，第二步便是实现外网对内网服务的访问（不然岂不是太过鸡肋w)。但苦于没有公网 ip，传统内网穿透（如 frp）把自身服务公开到公网又觉得太不安全，zerotier 虚拟局域网又要频繁切换 vpn 很不方便，总是找不到个万全的方法，因而一直处于搁置状态。如今看到 b 站<code>@靛青K</code>大佬通过 ss 实现内网服务安全访问的方法，咱灵光一闪，想到通过 frp 解决没有公网 ip 问题，进而通过 ss 实现内网安全访问的思路，于是便有了这篇文章——</p>
 <h2 id="主体思路"><a href="#主体思路" class="headerlink" title="主体思路"></a>主体思路</h2><p>通过 clash 实现基于域名的分流，当匹配到特定域名后缀后将流量发往 ss 服务端，ss 服务端通过 frp 实现内网穿透，从而实现安全而又便捷的内网访问功能。相较于传统公网 ip 和 frp 在公网暴露服务的风险隐患，本方法<b>只允许知晓 ss 账号的人通过 ss 访问内网服务</b>，而相对于 zerotier 则<b>连通性更好</b>，还<b>免去了 zerotier 和 clash 不能共存的麻烦</b>，方便很多。</p>
-<h3 id="流量整体转发路径如下"><a href="#流量整体转发路径如下" class="headerlink" title="流量整体转发路径如下"></a>流量整体转发路径如下</h3><p><code>外网访问 =&gt; clash规则匹配分流（ss客户端） =&gt; frps =&gt; frpc =&gt; ss服务端 =&gt; （ADGuard Home 自建DNS） =&gt; 反向代理服务器 =&gt; 目标服务</code></p>
+<h3 id="流量整体转发路径如下"><a href="#流量整体转发路径如下" class="headerlink" title="流量整体转发路径如下"></a>流量整体转发路径如下</h3><p><code>外网访问 =&gt; clash规则匹配分流（ss客户端） =&gt; frps =&gt; frpc =&gt; ss服务端 =&gt; （ADGuard Home 自建DNS =&gt; 反向代理服务器） =&gt; 目标服务</code></p>
 <h2 id="Shadowsocks-服务端搭建"><a href="#Shadowsocks-服务端搭建" class="headerlink" title="Shadowsocks 服务端搭建"></a>Shadowsocks 服务端搭建</h2><p>本人使用 <code>Shadowsocks-rust</code> 版本，通过 docker 安装。其中【宿主机地址】替换为本地保存 ss 配置文件的目录。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d -p 9000:9000 -p 9000:9000/udp --name shadowsocks-rust --restart=always -v 【宿主机目录】:/etc/shadowsocks-rust teddysun/shadowsocks-rust<br></code></pre></td></tr></table></figure>
 
@@ -326,7 +326,7 @@
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-string">&quot;server&quot;</span>:<span class="hljs-string">&quot;0.0.0.0&quot;</span>,<br><span class="hljs-string">&quot;server_port&quot;</span>:<span class="hljs-number">9000</span>,<br><span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;password0&quot;</span>,<br><span class="hljs-string">&quot;timeout&quot;</span>:<span class="hljs-number">300</span>,<br><span class="hljs-string">&quot;method&quot;</span>:<span class="hljs-string">&quot;aes-256-gcm&quot;</span>,<br><span class="hljs-string">&quot;dns&quot;</span>:<span class="hljs-string">&quot;192.168.1.1&quot;</span>,<br><span class="hljs-string">&quot;mode&quot;</span>:<span class="hljs-string">&quot;tcp_and_udp&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>重启 shadowsocks-rust 服务，ss 服务端设置完成。</p>
-<h2 id="使用frp实现内网穿透"><a href="#使用frp实现内网穿透" class="headerlink" title="使用frp实现内网穿透"></a>使用frp实现内网穿透</h2><h3 id="建立frp隧道"><a href="#建立frp隧道" class="headerlink" title="建立frp隧道"></a>建立frp隧道</h3><p>推荐使用 <a target="_blank" rel="noopener" href="https://www.natfrp.com/">SAKURA FRP</a> 提供的免费内网穿透服务，普通用户能通过签到每日免费获取流量，内网服务的简单访问足够了（大流量或对网络要求更高的用户请自行购买流量包和 VIP）。</p>
+<h2 id="使用frp实现内网穿透"><a href="#使用frp实现内网穿透" class="headerlink" title="使用frp实现内网穿透"></a>使用frp实现内网穿透</h2><h3 id="建立frp隧道"><a href="#建立frp隧道" class="headerlink" title="建立frp隧道"></a>建立frp隧道</h3><p>推荐使用 <a target="_blank" rel="noopener" href="https://www.natfrp.com/">SAKURA FRP</a>（natfrp） 提供的免费内网穿透服务，普通用户能通过签到每日免费获取流量，内网服务的简单访问足够了（大流量或对网络要求更高的用户请自行购买流量包和 VIP）。</p>
 <p>（申请账号后）登录进入主面版，点击 穿透 - 节点状态 查看所有节点。免费用户节点有限，挑个能用的国内节点就行。<br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/natfrp节点状态.png" srcset="/img/loading.gif" lazyload /></p>
 <p>转到 用户 - 用户信息 - 账号信息 处，找到<strong>访问密钥</strong>，记录备用。</p>
 <p>通过 id（上面节点 # 后即为 id）选取节点，转到 穿透 - 隧道列表 - 新建隧道 创建隧道。选择穿透节点，tcp、udp 隧道各创建一个。<br>隧道名随意设置，本地 ip 为 <code>ss服务器ip</code>，本地端口均为 <code>9000</code>（与上面ss的配置文件一致），<b>穿透节点、远程端口均一致</b>，开启压缩和加密。<br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/tcp隧道建立.png" srcset="/img/loading.gif" lazyload width="70%" /><br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/udp隧道建立.png" srcset="/img/loading.gif" lazyload width="70%" /></p>
@@ -362,8 +362,13 @@
 
 
 <h2 id="DNS-服务器设置"><a href="#DNS-服务器设置" class="headerlink" title="DNS 服务器设置"></a>DNS 服务器设置</h2><p>这里使用 ADGuard Home 做 DNS 服务，ADGuard Home 的 DNS 重写可以看作自定义 hosts 功能。选择 过滤器 - DNS 重写，添加 DNS 重写，ip 为反向代理服务器的 ip。ADGuard Home 这里支持<strong>泛域名</strong>，好评！<br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/DNS重写.png" srcset="/img/loading.gif" lazyload /></p>
+<p>我会对内网所有 HTTP(S) 服务都用 Nginx Proxy Manager 反代一遍，方便 clash 的配置文件规则匹配。而对于所有匹配到后缀 <code>your-domain.com</code>（假定 <code>your-domain.com</code> 为你的域名）的域名，都走我们这个 ss 节点，实现无感回家。因此，这里的 DNS 重写首先就是 <code>your-domain.com</code> 和 <code>*.your-domain.com</code> 两条，指向我们的 Nginx Proxy Manager 反代服务。</p>
+<p>这样设置后，在访问 <code>your-domain.com</code> 和 <code>*.your-domain.com</code> 时，我们 clash 规则匹配到，直接发往 ss 节点 &#x3D;&gt; ss 节点收到请求，进行目标域名的 DNS 解析，被我们的 DNS 重写拦截到，并给出反代服务的地址 &#x3D;&gt; 最后由反代那边处理，发往内网的 HTTP(S) 服务。</p>
 <h3 id="内网流量转发设置"><a href="#内网流量转发设置" class="headerlink" title="内网流量转发设置"></a>内网流量转发设置</h3><p>现在，你已经可以实现外网访问本地内网服务了。但内网设备 clash 也会绕这么大一圈来访问内网服务，这不符合我们的初衷。这就需要我们对内网流量转发做额外设置，</p>
-<h3 id="DNS-服务器设置-1"><a href="#DNS-服务器设置-1" class="headerlink" title="DNS 服务器设置"></a>DNS 服务器设置</h3><p>我们在 DNS 重写中，添加域名为 frp 服务器的域名，ip 为反代服务器的 ip。</p>
+<h3 id="DNS-服务器设置-1"><a href="#DNS-服务器设置-1" class="headerlink" title="DNS 服务器设置"></a>DNS 服务器设置</h3><p><del>我们在 DNS 重写中，添加域名为 frp 服务器的域名，ip 为反代服务器的 ip。</del></p>
+<h4 id="设置-natfrp-的-CNAME-域名解析（20260416-更新）"><a href="#设置-natfrp-的-CNAME-域名解析（20260416-更新）" class="headerlink" title="设置 natfrp 的 CNAME 域名解析（20260416 更新）"></a>设置 natfrp 的 CNAME 域名解析（20260416 更新）</h4><p>因为现在 natfrp docker 客户端通信的服务端域名与映射出来的域名一致，如果我们像之前进行 DNS 重写，内网的 natfrp 穿透的流量是无法发给远程服务端的，而是会也发往内网 Nginx Proxy Manager，造成访问内网的 ss 节点在内网环境无法连接，这不符合我们在家用内网避免限速和 natfrp 的流量浪费，在外用 frp 的初衷。</p>
+<p>为此我们可以在 DNS 解析设置子域名 CNAME 到 frp 映射的网址，然后搭配原有的 DNS 重写，在内网发起所有对 <code>*.your-domain.com</code> 的 DNS 解析请求时（假定 <code>your-domain.com</code> 为你的域名），回复你内网的 Nginx Proxy Manager 地址，进而由下面的 Streams 流量转发转发给你的内网 ss 节点。</p>
+<p>而在外面，则因为没有 DNS 重写，会直接请求到你设置的 DNS CNAME，进而得到 natfrp 的真实映射地址，通过原先建立的 natfrp 隧道正常访问内网 ss 节点。</p>
 <h3 id="反代设置-Streams-流量转发"><a href="#反代设置-Streams-流量转发" class="headerlink" title="反代设置 Streams 流量转发"></a>反代设置 Streams 流量转发</h3><p>这里通过 Nginx Proxy Manager 设置，没有搭建的同学可以查看咱之前的搭建教程：<a href="https://sunjx97.github.io/posts/233f7ebd/"><em>使用 docker 搭建 nginx proxy manager 实现反向代理和 SSL 证书申请</em></a>。</p>
 <p>Nginx 的 Stream 模块工作在第四层，我们可以用来转发 tcp、udp 数据包。登录管理页面，点击 Streams - Add Stream，<code>Incoming Port</code> 填 frp 隧道的<strong>远程端口</strong>，<code>Forward Host</code> 填 ss 服务端的 ip，<code>Forward Port</code> 填 ss 服务端的端口（即上面设置的<code>9000</code>）。</p>
 <p>设置完毕，此时如果我们回到家里，也不用手动切换为 DIRECT，访问内网服务的数据会自动导向反代服务器，进而转发到 ss 服务回到内网，无需担心浪费 frp 的流量。</p>
