@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/subconverter生成订阅.png">
 <meta property="og:image" content="https://sunjx97.github.io/images/使用%20frp%20和%20shadowsocks%20实现安全访问内网服务/DNS重写.png">
 <meta property="article:published_time" content="2022-02-16T11:19:23.000Z">
-<meta property="article:modified_time" content="2026-04-16T12:03:29.701Z">
+<meta property="article:modified_time" content="2026-04-16T13:21:36.402Z">
 <meta property="article:author" content="sunjx97">
 <meta property="article:tag" content="内网穿透">
 <meta property="article:tag" content="frp">
@@ -316,13 +316,13 @@
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>初期自建服务器进度完成后，第二步便是实现外网对内网服务的访问（不然岂不是太过鸡肋w)。但苦于没有公网 ip，传统内网穿透（如 frp）把自身服务公开到公网又觉得太不安全，zerotier 虚拟局域网又要频繁切换 vpn 很不方便，总是找不到个万全的方法，因而一直处于搁置状态。如今看到 b 站<code>@靛青K</code>大佬通过 ss 实现内网服务安全访问的方法，咱灵光一闪，想到通过 frp 解决没有公网 ip 问题，进而通过 ss 实现内网安全访问的思路，于是便有了这篇文章——</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>初期自建服务器进度完成后，第二步便是实现外网对内网服务的访问（不然岂不是太过鸡肋w)。但苦于没有公网 ip，传统内网穿透（如 frp）把自身服务公开到公网又觉得太不安全，zerotier 虚拟局域网又要频繁切换 vpn 很不方便，总是找不到个万全的方法，因而一直处于搁置状态。如今看到 b 站 <code>@靛青K</code> 大佬通过 ss 实现内网服务安全访问的方法，咱灵光一闪，想到通过 frp 解决没有公网 ip 问题，进而通过 ss 实现内网安全访问的思路，于是便有了这篇文章——</p>
 <h2 id="主体思路"><a href="#主体思路" class="headerlink" title="主体思路"></a>主体思路</h2><p>通过 clash 实现基于域名的分流，当匹配到特定域名后缀后将流量发往 ss 服务端，ss 服务端通过 frp 实现内网穿透，从而实现安全而又便捷的内网访问功能。相较于传统公网 ip 和 frp 在公网暴露服务的风险隐患，本方法<b>只允许知晓 ss 账号的人通过 ss 访问内网服务</b>，而相对于 zerotier 则<b>连通性更好</b>，还<b>免去了 zerotier 和 clash 不能共存的麻烦</b>，方便很多。</p>
 <h3 id="流量整体转发路径如下"><a href="#流量整体转发路径如下" class="headerlink" title="流量整体转发路径如下"></a>流量整体转发路径如下</h3><p><code>外网访问 =&gt; clash规则匹配分流（ss客户端） =&gt; frps =&gt; frpc =&gt; ss服务端 =&gt; （ADGuard Home 自建DNS =&gt; 反向代理服务器） =&gt; 目标服务</code></p>
 <h2 id="Shadowsocks-服务端搭建"><a href="#Shadowsocks-服务端搭建" class="headerlink" title="Shadowsocks 服务端搭建"></a>Shadowsocks 服务端搭建</h2><p>本人使用 <code>Shadowsocks-rust</code> 版本，通过 docker 安装。其中【宿主机地址】替换为本地保存 ss 配置文件的目录。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d -p 9000:9000 -p 9000:9000/udp --name shadowsocks-rust --restart=always -v 【宿主机目录】:/etc/shadowsocks-rust teddysun/shadowsocks-rust<br></code></pre></td></tr></table></figure>
 
-<p>在【宿主机目录】下新建 <code>config.json</code> 文件，内容如下。<code>password0</code> 替换为你的密码，键 <code>dns</code> 的值 <code>192.168.1.1</code> 替换为你的 dns 服务器地址。 <code>method</code> 的值 <code>aes-256-gcm</code> 换为你的加密方式（用咱这个就行，不用动）。</p>
+<p>在【宿主机目录】下新建 <code>config.json</code> 文件，内容如下。<code>password0</code> 替换为你的密码，键 <code>dns</code> 的值 <code>192.168.1.1</code> 替换为你的 dns 服务器地址。 <code>method</code> 的值 <code>aes-256-gcm</code> 换为你的加密方式（用这个就行，不用动）。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-string">&quot;server&quot;</span>:<span class="hljs-string">&quot;0.0.0.0&quot;</span>,<br><span class="hljs-string">&quot;server_port&quot;</span>:<span class="hljs-number">9000</span>,<br><span class="hljs-string">&quot;password&quot;</span>:<span class="hljs-string">&quot;password0&quot;</span>,<br><span class="hljs-string">&quot;timeout&quot;</span>:<span class="hljs-number">300</span>,<br><span class="hljs-string">&quot;method&quot;</span>:<span class="hljs-string">&quot;aes-256-gcm&quot;</span>,<br><span class="hljs-string">&quot;dns&quot;</span>:<span class="hljs-string">&quot;192.168.1.1&quot;</span>,<br><span class="hljs-string">&quot;mode&quot;</span>:<span class="hljs-string">&quot;tcp_and_udp&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>重启 shadowsocks-rust 服务，ss 服务端设置完成。</p>
@@ -333,7 +333,7 @@
 <p>创建完成后，在隧道列表页获取<strong>隧道id</strong>。<br><img src="/images/使用 frp 和 shadowsocks 实现安全访问内网服务/获取隧道id.png" srcset="/img/loading.gif" lazyload /></p>
 <p>点其中一条隧道最后三个点（<code>操作</code> 项），选择配置文件，找到 <code>[common]</code> 下 <code>server_addr</code> 项，复制 frp 服务器地址备用。</p>
 <h3 id="通过docker安装frpc"><a href="#通过docker安装frpc" class="headerlink" title="通过docker安装frpc"></a>通过docker安装frpc</h3><p>因为使用的是 <a target="_blank" rel="noopener" href="https://doc.natfrp.com/#/frpc/usage/docker">SAKURA FRP 提供的服务</a>，所以这里不能使用官方版 frpc，应在 dockerhub 拉取 <code>natfrp/frpc</code> 镜像。</p>
-<p>注意不同于官方 frpc，natfrp 使用用户密钥和隧道 id 拉取配置文件，所以要设置<a target="_blank" rel="noopener" href="https://doc.natfrp.com/#/frpc/usage/docker?id=%e5%89%8d%e7%bd%ae%e7%9f%a5%e8%af%86%e8%af%b4%e6%98%8e">启动参数</a>。格式为 <code>&lt;启动密钥&gt;:&lt;隧道ID1&gt;,隧道ID2,隧道ID3,...</code>，其中启动密钥即上一步的访问密钥，隧道 id 即上一步的两个隧道 id。</p>
+<p>注意不同于官方 frpc，natfrp 使用用户密钥和隧道 id 拉取配置文件，所以要设置<a target="_blank" rel="noopener" href="https://doc.natfrp.com/#/frpc/usage/docker?id=%e5%89%8d%e7%bd%ae%e7%9f%a5%e8%af%86%e8%af%b4%e6%98%8e">启动参数</a>。格式为 <code>&lt;启动密钥&gt;:&lt;隧道ID1&gt;,&lt;隧道ID2&gt;,隧道ID3&gt;,...</code>，其中启动密钥即上一步的访问密钥，隧道 id 即上一步的两个隧道 id。</p>
 <p>使用命令行安装如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d --name frpc-natfrp --restart=always natfrp/frpc -f &lt;启动参数&gt;<br></code></pre></td></tr></table></figure>
 
